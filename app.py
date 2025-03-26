@@ -11,11 +11,21 @@ def fetch_nifty_options():
     url = "https://www.nseindia.com/api/option-chain-indices?symbol=NIFTY"
 
     headers = {
-        "User-Agent": "Mozilla/5.0"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Referer": "https://www.nseindia.com/option-chain",
+        "Connection": "keep-alive",
     }
 
+    session = requests.Session()  # Maintain session for NSE
+    session.headers.update(headers)
+
     try:
-        response = requests.get(url, headers=headers, timeout=10)
+        # First request to establish session (important)
+        session.get("https://www.nseindia.com", timeout=5)
+
+        # Fetch option chain data
+        response = session.get(url, timeout=10)
         data = response.json()
 
         # Extract Option Chain Data
